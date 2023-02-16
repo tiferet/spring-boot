@@ -1,0 +1,43 @@
+
+name: "Code Scanning - Action"
+on: push
+jobs:
+    CodeQL-Build:
+        runs-on: ubuntu-latest
+
+        permissions:
+            # required for all workflows
+            security-events: write
+
+            # only required for workflows in private repositories
+            actions: read
+            contents: read
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            # Initializes the CodeQL tools for scanning.
+            - name: Initialize CodeQL
+              uses: github/codeql-action/init@v2
+              with:
+                  languages: java
+
+            # Build the project, including steps to (i) install tools (including compilers in the appropriate versions, 
+            # package managers, and build tools), (ii) install dependencies, (iii) build the code.
+            - name:
+                Install JDK 17
+                run: sudo apt-get install openjdk-17-jdk
+            - name:
+                Install Gradle
+                run: sudo apt-get install gradle
+            - name:
+                Install plugins
+                run: gradle plugins:base,org.jetbrains.kotlin.jvm,io.spring.nohttp
+            - name:
+                Build project
+                run: gradle build -Pversion=3.1.0-SNAPSHOT -Porg.gradle.caching=true -Porg.gradle.parallel=true -Porg.gradle.jvmargs=-Xmx2g -Dfile.encoding=UTF-8 -PkotlinVersion=1.7.22 -Ptomcat
+
+            # Analyze the project using CodeQL.
+            - name: Perform CodeQL Analysis
+              uses: github/codeql-action/analyze@v2
