@@ -1,0 +1,26 @@
+
+on:
+  workflow_dispatch:
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+        - name: Install JDK 17
+          run: sudo apt-get install openjdk-17-jdk
+        - name: Install Gradle
+          run: sudo apt-get install gradle
+        - name: Install Maven
+          run: sudo apt-get install maven
+        - name: Install Kotlin
+          run: sudo apt-get install kotlin
+        - name: Install Tomcat
+          run: sudo apt-get install tomcat
+        - name: Install Native Build Tools
+          run: sudo apt-get install native-build-tools
+        - name: Install Gradle Plugins
+          run: gradle plugins
+        - name: Install Dependencies
+          run: gradle dependencies
+        - name: Build
+          run: gradle build
